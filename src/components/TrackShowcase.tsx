@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { TRACK_LAYOUTS } from '@/lib/constants';
+import { CARS } from '@/lib/cars';
 
 export default function TrackShowcase() {
   return (
@@ -50,7 +51,7 @@ export default function TrackShowcase() {
                     background: 'radial-gradient(circle at 30% 50%, rgba(255,140,0,0.08), transparent 60%)',
                   }} />
                   <img 
-                    src={require('@/lib/cars').CARS[index % require('@/lib/cars').CARS.length].image} 
+                    src={CARS[index % CARS.length].image} 
                     alt="Track Car" 
                     style={{ height: '70%', objectFit: 'contain', zIndex: 1, filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }} 
                   />
