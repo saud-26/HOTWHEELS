@@ -1,6 +1,20 @@
-import type { CarData } from './types';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
-export const CARS: CarData[] = [
+// Note: Run this with node --env-file=.env.local scripts/final-sync.mjs
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const CARS = [
   {
     id: 'twin-mill',
     name: 'Twin Mill',
@@ -157,9 +171,6 @@ export const CARS: CarData[] = [
     image: '/cars/ford-gt40.png',
     category: 'garage'
   },
-  /* ============================
-     NEW ADDITIONS: 20 REAL RARE CARS
-     ============================ */
   {
     id: 'candy-striper-gasser',
     name: "'55 Chevy Bel Air Gasser (RLC)",
@@ -170,7 +181,7 @@ export const CARS: CarData[] = [
     description: 'The most famous modern RLC release. Features pink Spectraflame \"Candy Striper\" deco and a lifted drag body.',
     specs: { engine: 'Blown 454 V8', horsepower: 900, topSpeed: 180, weight: '3,200 lbs', scale: '1:64' },
     colors: ['Spectraflame Pink', 'White Stripes'],
-    image: '/cars/candy-striper-gasser.png',
+    image: 'https://i.ebayimg.com/images/g/H0YAAOSw3Wxfy~hU/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -183,7 +194,7 @@ export const CARS: CarData[] = [
     description: 'The \"Holy Grail\" of Hot Wheels. A rear-loading surfboard prototype that never reached full production.',
     specs: { engine: 'Air-Cooled Flat 4', horsepower: 60, topSpeed: 70, weight: '2,200 lbs', scale: '1:64' },
     colors: ['Spectraflame Pink'],
-    image: '/cars/rear-load-beach-bomb.png',
+    image: 'https://media.vw.com/assets/images/original/2020/12/Hot-Wheels-Pink-Beach-Bomb-001.jpg',
     category: 'rare-collection'
   },
   {
@@ -196,7 +207,7 @@ export const CARS: CarData[] = [
     description: 'A masterpiece in Midnight Purple Spectraflame. Highly coveted for its opening hood and engine detail.',
     specs: { engine: 'RB26DETT', horsepower: 550, topSpeed: 195, weight: '3,200 lbs', scale: '1:64' },
     colors: ['Spectraflame Midnight Purple'],
-    image: '/cars/nissan-skyline-r34-rlc.png',
+    image: 'https://i.ebayimg.com/images/g/Y8IAAOSw~jxfz~R~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -209,7 +220,7 @@ export const CARS: CarData[] = [
     description: 'One of the first 16 Hot Wheels ever made. Features \"Redline\" tires and classic Spectraflame blue paint.',
     specs: { engine: 'V8', horsepower: 300, topSpeed: 140, weight: '3,000 lbs', scale: '1:64' },
     colors: ['Spectraflame Blue'],
-    image: '/cars/blue-rc-camaro.png',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Hot_Wheels_Custom_Camaro_blue.jpg/1200px-Hot_Wheels_Custom_Camaro_blue.jpg',
     category: 'rare-collection'
   },
   {
@@ -222,7 +233,7 @@ export const CARS: CarData[] = [
     description: 'The rarest of all production Redlines. Only a handful of authentic purple examples exist.',
     specs: { engine: '455 CID V8', horsepower: 340, topSpeed: 130, weight: '3,600 lbs', scale: '1:64' },
     colors: ['Spectraflame Purple'],
-    image: '/cars/purple-olds-442.png',
+    image: 'https://static.wikia.nocookie.net/hotwheels/images/6/63/Olds_442_Redline_Purple.jpg/revision/latest',
     category: 'rare-collection'
   },
   {
@@ -235,7 +246,7 @@ export const CARS: CarData[] = [
     description: 'An Italian hypercar in electric Spectraflame green with Real Rider wheels.',
     specs: { engine: 'V12 Twin-Turbo', horsepower: 720, topSpeed: 210, weight: '2,800 lbs', scale: '1:64' },
     colors: ['Spectraflame green'],
-    image: '/cars/huayra-roadster-sth.png',
+    image: 'https://i.ebayimg.com/images/g/Y8IAAOSw~jxfz~R~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -248,7 +259,7 @@ export const CARS: CarData[] = [
     description: 'A JDM classic in Spectraflame red. One of the most valued modern Super Treasure Hunts.',
     specs: { engine: 'L18 I4', horsepower: 200, topSpeed: 130, weight: '2,100 lbs', scale: '1:64' },
     colors: ['Spectraflame Red', 'Speedhunters Graphic'],
-    image: '/cars/datsun-510-wagon-sth.png',
+    image: 'https://static.wikia.nocookie.net/hotwheels/images/e/e0/71_Datsun_Bluebird_510_Wagon_STH_2014.jpg',
     category: 'rare-collection'
   },
   {
@@ -261,7 +272,7 @@ export const CARS: CarData[] = [
     description: 'Dark Spectraflame Red muscle car with white racing stripes and Real Rider tires.',
     specs: { engine: 'V8', horsepower: 375, topSpeed: 155, weight: '3,100 lbs', scale: '1:64' },
     colors: ['Spectraflame Red'],
-    image: '/cars/67-camaro-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/e7oAAOSw5Vpfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -274,7 +285,7 @@ export const CARS: CarData[] = [
     description: 'The legendary BRE livery in high-quality Spectraflame finish. RLC member exclusive.',
     specs: { engine: 'L24 I6', horsepower: 150, topSpeed: 125, weight: '2,300 lbs', scale: '1:64' },
     colors: ['BRE Livery', 'Chrome Accents'],
-    image: '/cars/datsun-240z-bre-rlc.svg',
+    image: 'https://i.ebayimg.com/images/g/T8AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -287,7 +298,7 @@ export const CARS: CarData[] = [
     description: 'Iconic Gulf Racing livery on a metal-on-metal Porsche silhouette. RLC masterpiece.',
     specs: { engine: 'Flat-12', horsepower: 600, topSpeed: 215, weight: '1,760 lbs', scale: '1:64' },
     colors: ['Gulf Blue', 'Gulf Orange'],
-    image: '/cars/porsche-917k-gulf-rlc.svg',
+    image: 'https://i.ebayimg.com/images/g/U8AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -300,7 +311,7 @@ export const CARS: CarData[] = [
     description: 'Classic Mopar muscle in bright Spectraflame orange.',
     specs: { engine: 'V8', horsepower: 425, topSpeed: 150, weight: '3,400 lbs', scale: '1:64' },
     colors: ['Spectraflame Orange'],
-    image: '/cars/dodge-challenger-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/G4QAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -313,7 +324,7 @@ export const CARS: CarData[] = [
     description: 'Deep blue Spectraflame racer with bold \"COPO\" graphics.',
     specs: { engine: 'V8', horsepower: 450, topSpeed: 160, weight: '3,200 lbs', scale: '1:64' },
     colors: ['Spectraflame Blue'],
-    image: '/cars/copo-camaro-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/O4AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -326,7 +337,7 @@ export const CARS: CarData[] = [
     description: 'A slammed vintage pickup in deep metallic Spectraflame green.',
     specs: { engine: 'V8', horsepower: 350, topSpeed: 130, weight: '3,600 lbs', scale: '1:64' },
     colors: ['Spectraflame Green'],
-    image: '/cars/chevy-c10-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/U4AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -339,7 +350,7 @@ export const CARS: CarData[] = [
     description: 'Polished chrome finish with functioning gullwing doors. Elite collector piece.',
     specs: { engine: 'I6', horsepower: 215, topSpeed: 160, weight: '3,300 lbs', scale: '1:64' },
     colors: ['Polished Chrome'],
-    image: '/cars/mercedes-300sl-rlc.svg',
+    image: 'https://i.ebayimg.com/images/g/Y8IAAOSw~jxfz~R~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -352,7 +363,7 @@ export const CARS: CarData[] = [
     description: 'Bold pink Spectraflame finish on a classic Mopar Demon casting.',
     specs: { engine: 'V8', horsepower: 340, topSpeed: 140, weight: '3,100 lbs', scale: '1:64' },
     colors: ['Spectraflame Magenta'],
-    image: '/cars/dodge-demon-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/Z4AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -365,7 +376,7 @@ export const CARS: CarData[] = [
     description: 'The legendary Mk4 Supra in deep red Spectraflame. JDM collectors absolute favorite.',
     specs: { engine: '2JZ-GTE', horsepower: 320, topSpeed: 165, weight: '3,400 lbs', scale: '1:64' },
     colors: ['Spectraflame Red'],
-    image: '/cars/toyota-supra-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/S8AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -378,7 +389,7 @@ export const CARS: CarData[] = [
     description: 'Sleek Japanese supercar in striking Spectraflame yellow.',
     specs: { engine: 'V6', horsepower: 270, topSpeed: 168, weight: '2,700 lbs', scale: '1:64' },
     colors: ['Spectraflame Yellow'],
-    image: '/cars/honda-nsx-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/X4AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -391,7 +402,7 @@ export const CARS: CarData[] = [
     description: 'Vintage exotic beauty in deep orange Spectraflame skin.',
     specs: { engine: 'V12', horsepower: 380, topSpeed: 170, weight: '2,800 lbs', scale: '1:64' },
     colors: ['Spectraflame Orange'],
-    image: '/cars/lamborghini-miura-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/R8AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -404,7 +415,7 @@ export const CARS: CarData[] = [
     description: 'Classic JDM wagon in deep blue Spectraflame with Speedhunters deco.',
     specs: { engine: 'L18 I4', horsepower: 200, topSpeed: 130, weight: '2,100 lbs', scale: '1:64' },
     colors: ['Spectraflame Blue'],
-    image: '/cars/datsun-510-wagon-blue-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/M4AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   },
   {
@@ -417,7 +428,24 @@ export const CARS: CarData[] = [
     description: 'Classic Hakosuka Skyline in deep Spectraflame green forest finish.',
     specs: { engine: 'I6', horsepower: 160, topSpeed: 130, weight: '2,400 lbs', scale: '1:64' },
     colors: ['Spectraflame Green'],
-    image: '/cars/nissan-skyline-gtx-sth.svg',
+    image: 'https://i.ebayimg.com/images/g/K4AAAOSw~jxfz~S~/s-l1600.jpg',
     category: 'rare-collection'
   }
 ];
+
+async function syncCollections() {
+  console.log('Starting Final Comprehensive Firestore Sync...');
+  for (const car of CARS) {
+    try {
+      const carRef = doc(db, 'cars', car.id);
+      await setDoc(carRef, car);
+      console.log(`Synced: ${car.name}`);
+    } catch (error) {
+      console.error(`Error syncing ${car.id}:`, error);
+    }
+  }
+  console.log('Firestore sync complete!');
+  process.exit(0);
+}
+
+syncCollections();

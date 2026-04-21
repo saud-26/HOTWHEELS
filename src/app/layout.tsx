@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navigation from '@/components/Navigation';
 
+import AdminButton from '@/components/AdminButton';
+
 export const metadata: Metadata = {
   title: 'Hot Wheels Legends | The Ultimate Die-Cast Collection',
   description:
@@ -19,6 +21,7 @@ export default function RootLayout({
       <body>
         <Navigation />
         <main>{children}</main>
+        <AdminButton />
       </body>
     </html>
   );

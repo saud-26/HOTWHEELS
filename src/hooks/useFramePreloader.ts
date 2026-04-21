@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FRAME_COUNT, getFramePath } from '@/lib/constants';
 
 interface PreloaderResult {
@@ -12,7 +12,7 @@ interface PreloaderResult {
 export function useFramePreloader(): PreloaderResult {
   const [progress, setProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const [images, setImages] = useState<HTMLImageElement[]>([]);
 
   useEffect(() => {
     let loadedCount = 0;
@@ -24,7 +24,7 @@ export function useFramePreloader(): PreloaderResult {
       const pct = Math.round((loadedCount / totalFrames) * 100);
       setProgress(pct);
       if (loadedCount === totalFrames) {
-        imagesRef.current = images;
+        setImages(images);
         setIsLoaded(true);
       }
     };
@@ -56,5 +56,5 @@ export function useFramePreloader(): PreloaderResult {
     loadBatch();
   }, []);
 
-  return { progress, images: imagesRef.current, isLoaded };
+  return { progress, images, isLoaded };
 }

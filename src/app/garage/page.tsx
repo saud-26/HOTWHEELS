@@ -1,15 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CarRotator from '@/components/CarRotator';
 import CarSpecs from '@/components/CarSpecs';
 import Footer from '@/components/Footer';
 import { CARS } from '@/lib/cars';
+import type { CarData } from '@/lib/types';
+import { getGarageCars } from '@/lib/db';
+import { resolveCarImage } from '@/lib/image-utils';
 
 export default function GaragePage() {
+  const [cars, setCars] = useState<CarData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const selectedCar = CARS[selectedIndex];
+
+  useEffect(() => {
+    async function fetchCars() {
+      try {
+        const data = await getGarageCars();
+        setCars(data.length > 0 ? data : CARS);
+      } catch (err) {
+        setCars(CARS.filter(c => c.category === 'garage'));
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCars();
+  }, []);
+
+  const selectedCar = cars[selectedIndex] || cars[0];
+
+  if (loading) {
+    return (
+      <>
+        <div className="page-hero">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <span className="gradient-text">The</span> Garage
+          </motion.h1>
+        </div>
+        <section className="section" style={{ paddingTop: 0 }}>
+          <div className="container">
+            <div className="admin-loading-cars">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="admin-car-skeleton" style={{ height: 200 }} />
+              ))}
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  if (cars.length === 0) return null;
 
   return (
     <>
@@ -46,9 +93,9 @@ export default function GaragePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            {CARS.map((car, i) => (
+            {cars.map((car, i) => (
               <button
-                key={car.id}
+                key={car._id || car.id}
                 onClick={() => setSelectedIndex(i)}
                 className={`filter-pill ${selectedIndex === i ? 'active' : ''}`}
               >
@@ -59,11 +106,11 @@ export default function GaragePage() {
 
           {/* Garage Viewer */}
           <div className="garage-viewer">
-            <CarRotator image={selectedCar.image} />
+            <CarRotator image={resolveCarImage(selectedCar.id, selectedCar.image)} />
 
             <AnimatePresence mode="wait">
               <motion.div
-                key={selectedCar.id}
+                key={selectedCar._id || selectedCar.id}
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -30 }}

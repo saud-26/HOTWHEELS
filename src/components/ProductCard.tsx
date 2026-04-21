@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import type { CarData } from '@/lib/types';
 import { RARITY_LEVELS } from '@/lib/constants';
+import { resolveCarImage, handleImageError } from '@/lib/image-utils';
 
 interface ProductCardProps {
   car: CarData;
@@ -36,16 +37,23 @@ export default function ProductCard({ car, index }: ProductCardProps) {
 
       {/* Car Image Area */}
       <div className="product-card-image">
-        <img 
-          src={car.image} 
-          alt={car.name} 
-          style={{
-            width: '85%',
-            height: '85%',
-            objectFit: 'contain',
-            filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.5))',
-          }} 
-        />
+        {car.image ? (
+          <img 
+            src={resolveCarImage(car.id, car.image)} 
+            alt={car.name} 
+            onError={handleImageError}
+            style={{
+              width: '85%',
+              height: '85%',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.5))',
+            }} 
+          />
+        ) : (
+          <div style={{ color: 'var(--color-text-dim)', fontStyle: 'italic', fontSize: '0.8rem' }}>
+            Image Coming Soon
+          </div>
+        )}
       </div>
 
       {/* Info */}

@@ -1,8 +1,10 @@
 export type RarityLevel = 'super-treasure' | 'treasure' | 'limited' | 'regular';
 
 export interface CarData {
+  _id?: string;
   id: string;
   name: string;
+  bio?: string;
   series: string;
   year: number;
   rarity: RarityLevel;
@@ -17,6 +19,7 @@ export interface CarData {
   };
   colors: string[];
   image: string;
+  category?: 'rare-collection' | 'garage';
 }
 
 export interface TimelineEntry {

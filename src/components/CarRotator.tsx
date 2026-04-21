@@ -52,7 +52,7 @@ export default function CarRotator({ image }: { image?: string }) {
         }}
       >
         {image ? (
-          <img src={image} alt="Car 3D View" style={{ height: '250px', objectFit: 'contain', pointerEvents: 'none' }} draggable={false} />
+          <img src={image} alt="Car 3D View" onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ height: '250px', objectFit: 'contain', pointerEvents: 'none' }} draggable={false} />
         ) : (
           <span style={{ fontSize: '6rem' }}>🏎️</span>
         )}

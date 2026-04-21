@@ -1,9 +1,10 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CARS } from '@/lib/cars';
-
-const FEATURED_CARS = CARS.slice(0, 6);
+import type { CarData } from '@/lib/types';
+import { resolveCarImage, handleImageError } from '@/lib/image-utils';
 
 const containerVariants = {
   hidden: {},
@@ -22,6 +23,25 @@ const cardVariants = {
 };
 
 export default function CollectionShowcase() {
+  const [featuredCars, setFeaturedCars] = useState<CarData[]>(CARS.slice(0, 6));
+
+  useEffect(() => {
+    async function fetchCars() {
+      try {
+        const res = await fetch('/api/cars/?limit=6');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setFeaturedCars(data.slice(0, 6));
+          }
+        }
+      } catch {
+        // Keep static fallback — already set in state
+      }
+    }
+    fetchCars();
+  }, []);
+
   return (
     <section className="showcase section">
       <div className="container">
@@ -52,16 +72,17 @@ export default function CollectionShowcase() {
           whileInView="visible"
           viewport={{ once: true, margin: '-50px' }}
         >
-          {FEATURED_CARS.map((car) => (
+          {featuredCars.map((car) => (
             <motion.div
-              key={car.id}
+              key={car._id || car.id}
               className="showcase-card"
               variants={cardVariants}
             >
               <div className="showcase-card-image">
                   <img 
-                    src={car.image} 
+                    src={resolveCarImage(car.id, car.image)} 
                     alt={car.name}
+                    onError={handleImageError}
                     style={{
                       width: '80%',
                       height: '80%',
