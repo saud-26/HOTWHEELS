@@ -1,0 +1,150 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function role() {
+      return signedIn() ? request.auth.token.role : null;
+    }
+
+    function isSuperAdmin() {
+      return role() == 'superadmin';
+    }
+
+    function isManager() {
+      return role() in ['manager', 'superadmin'];
+    }
+
+    function isEditor() {
+      return role() in ['editor', 'manager', 'superadmin'];
+    }
+
+    function isViewer() {
+      return role() in ['viewer', 'editor', 'manager', 'superadmin'];
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function publicPromo() {
+      return resource.data.active == true
+        && resource.data.startDate <= request.time
+        && resource.data.endDate >= request.time;
+    }
+
+    match /products/{productId} {
+      allow read: if resource.data.active == true || isViewer();
+      allow create, update, delete: if isEditor();
+    }
+
+    match /cars/{carId} {
+      allow read: if true;
+      allow create, update, delete: if isEditor();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isViewer();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isManager();
+      allow delete: if isSuperAdmin();
+
+      match /userCollection/{collectionId} {
+        allow read, write: if isOwner(userId) || isManager();
+      }
+
+      match /notifications/{notificationId} {
+        allow read, update, delete: if isOwner(userId);
+        allow create: if isManager();
+      }
+    }
+
+    match /userProfiles/{uid} {
+      allow read: if resource.data.isPublic == true || isOwner(uid) || isViewer();
+      allow create, update: if isOwner(uid);
+      allow delete: if isOwner(uid) || isSuperAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.paymentStatus in ['pending', 'awaiting_verification']
+        && request.resource.data.orderStatus in ['pending', 'confirmed'];
+      allow read: if isManager() || isOwner(resource.data.userId);
+      allow update: if isManager();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if resource.data.adminApproved == true || isViewer();
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5;
+      allow update: if isManager();
+      allow delete: if isManager() || isOwner(resource.data.userId);
+    }
+
+    match /adminUsers/{uid} {
+      allow read: if isViewer();
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    match /promoCodes/{code} {
+      allow read: if isViewer() || publicPromo();
+      allow create, update, delete: if isManager();
+    }
+
+    match /promoUsage/{usageId} {
+      allow read: if isManager() || isOwner(resource.data.userId);
+      allow create, update, delete: if false;
+    }
+
+    match /inventoryAlerts/{alertId} {
+      allow read: if isViewer();
+      allow create, update: if isEditor();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /stockHistory/{historyId} {
+      allow read: if isViewer();
+      allow create: if isEditor();
+      allow update, delete: if false;
+    }
+
+    match /stockAlerts/{alertId} {
+      allow read, delete: if isOwner(resource.data.userId) || isManager();
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isOwner(resource.data.userId) || isManager();
+    }
+
+    match /newsletter/{emailHash} {
+      allow create: if true;
+      allow read, update, delete: if isManager();
+    }
+
+    match /searchLogs/{logId} {
+      allow create: if true;
+      allow read, delete: if isManager();
+      allow update: if false;
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isSuperAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isManager();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

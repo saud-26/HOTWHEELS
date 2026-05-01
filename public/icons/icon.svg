@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Hot Wheels Legends</title>
+  <rect width="512" height="512" rx="112" fill="#0A0A0A"/>
+  <path d="M106 307c23-93 111-79 142-167 6 70 93 78 78 167 27-30 61-19 75 15 17 42-25 92-91 92H180c-60 0-88-54-74-107Z" fill="#E31937"/>
+  <path d="M158 329c17-48 67-47 92-101 3 47 60 56 48 101 17-17 38-10 48 10 11 25-15 54-52 54h-90c-36 0-55-32-46-64Z" fill="#FF6B00"/>
+  <path d="M205 352c10-26 39-30 54-61 2 27 31 35 25 61 10-9 22-5 27 6 7 16-8 34-31 34h-50c-22 0-31-20-25-40Z" fill="#FFD700"/>
+  <path d="M119 130h274c19 0 35 16 35 35v54H84v-54c0-19 16-35 35-35Z" fill="#141414"/>
+  <path d="M112 185h288" stroke="#FF6B00" stroke-width="26" stroke-linecap="round"/>
+  <path d="M144 184h119" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round"/>
+</svg>

@@ -14,6 +14,20 @@ const specItems = [
 ] as const;
 
 export default function CarSpecs({ car }: CarSpecsProps) {
+  const safeSpecs = car.specs ?? {
+    engine: '',
+    horsepower: 0,
+    topSpeed: 0,
+    weight: '',
+    scale: '1:64',
+  };
+  const horsepower = Number.isFinite(safeSpecs.horsepower) ? safeSpecs.horsepower : 0;
+  const topSpeed = Number.isFinite(safeSpecs.topSpeed) ? safeSpecs.topSpeed : 0;
+  const horsepowerPct = Math.min(100, Math.max(0, (horsepower / 1200) * 100));
+  const topSpeedPct = Math.min(100, Math.max(0, (topSpeed / 250) * 100));
+  const rarityScore = Number.isFinite(car.rarityScore) ? car.rarityScore : 0;
+  const rarityLabel = (car.rarity ?? 'regular').replace('-', ' ').toUpperCase();
+
   return (
     <div className="spec-panel">
       <motion.div
@@ -22,12 +36,12 @@ export default function CarSpecs({ car }: CarSpecsProps) {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <h3 style={{ marginBottom: 'var(--space-xs)' }}>{car.name}</h3>
+        <h3 style={{ marginBottom: 'var(--space-xs)' }}>{car.name || 'Unknown Car'}</h3>
         <div style={{ fontSize: '0.85rem', color: 'var(--color-accent-1)', marginBottom: 'var(--space-sm)', fontFamily: 'var(--font-heading)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          {car.series} · {car.year}
+          {car.series || 'Unknown Series'} · {car.year ?? '—'}
         </div>
         <p style={{ fontSize: '0.9rem', lineHeight: 1.7, marginBottom: 'var(--space-lg)' }}>
-          {car.description}
+          {car.description || ''}
         </p>
       </motion.div>
 
@@ -41,7 +55,7 @@ export default function CarSpecs({ car }: CarSpecsProps) {
       >
         <div className="spec-label">
           <span>Engine</span>
-          <span className="spec-value">{car.specs.engine}</span>
+          <span className="spec-value">{safeSpecs.engine || '—'}</span>
         </div>
       </motion.div>
 
@@ -55,13 +69,13 @@ export default function CarSpecs({ car }: CarSpecsProps) {
       >
         <div className="spec-label">
           <span>Horsepower</span>
-          <span className="spec-value">{car.specs.horsepower} HP</span>
+          <span className="spec-value">{horsepower} HP</span>
         </div>
         <div className="spec-bar">
           <motion.div
             className="spec-bar-fill"
             initial={{ width: 0 }}
-            whileInView={{ width: `${(car.specs.horsepower / 1200) * 100}%` }}
+            whileInView={{ width: `${horsepowerPct}%` }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           />
@@ -78,13 +92,13 @@ export default function CarSpecs({ car }: CarSpecsProps) {
       >
         <div className="spec-label">
           <span>Top Speed</span>
-          <span className="spec-value">{car.specs.topSpeed} MPH</span>
+          <span className="spec-value">{topSpeed} MPH</span>
         </div>
         <div className="spec-bar">
           <motion.div
             className="spec-bar-fill"
             initial={{ width: 0 }}
-            whileInView={{ width: `${(car.specs.topSpeed / 250) * 100}%` }}
+            whileInView={{ width: `${topSpeedPct}%` }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           />
@@ -104,7 +118,7 @@ export default function CarSpecs({ car }: CarSpecsProps) {
             <span>Weight</span>
           </div>
           <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: 'var(--color-text)', marginTop: '4px' }}>
-            {car.specs.weight}
+            {safeSpecs.weight || '—'}
           </div>
         </div>
         <div className="spec-item" style={{ flex: 1 }}>
@@ -112,7 +126,7 @@ export default function CarSpecs({ car }: CarSpecsProps) {
             <span>Scale</span>
           </div>
           <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: 'var(--color-text)', marginTop: '4px' }}>
-            {car.specs.scale}
+            {safeSpecs.scale || '1:64'}
           </div>
         </div>
       </motion.div>
@@ -128,13 +142,13 @@ export default function CarSpecs({ car }: CarSpecsProps) {
       >
         <div className="spec-label">
           <span>Rarity</span>
-          <span className="spec-value">{car.rarity.replace('-', ' ').toUpperCase()}</span>
+          <span className="spec-value">{rarityLabel}</span>
         </div>
         <div className="rarity-dots" style={{ marginTop: '6px' }}>
           {Array.from({ length: 5 }).map((_, i) => (
             <motion.span
               key={i}
-              className={`rarity-dot ${i < car.rarityScore ? 'filled' : ''}`}
+              className={`rarity-dot ${i < rarityScore ? 'filled' : ''}`}
               style={{ width: '10px', height: '10px' }}
               initial={{ scale: 0 }}
               whileInView={{ scale: 1 }}

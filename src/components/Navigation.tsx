@@ -18,6 +18,8 @@ export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isAdminRoute = pathname?.startsWith('/admin');
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -28,6 +30,10 @@ export default function Navigation() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  if (isAdminRoute) {
+    return null;
+  }
 
   return (
     <>

@@ -1,0 +1,19 @@
+{
+  "name": "Hot Wheels Legends",
+  "short_name": "HotWheels",
+  "description": "Buy and explore authentic Hot Wheels die-cast cars online.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#E31937",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
