@@ -13,8 +13,13 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
+// Initialize Firebase
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+
+// Initialize services
+// getAuth will throw an error during build/prerendering if the API key is missing.
+// We check for the API key to avoid this crash.
+const auth = firebaseConfig.apiKey ? getAuth(app) : (null as any);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
