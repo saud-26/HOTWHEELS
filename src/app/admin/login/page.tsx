@@ -19,10 +19,10 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const { auth } = await import('@/lib/firebase');
+      const { getFirebaseAuth } = await import('@/lib/firebase');
       const { signInWithEmailAndPassword } = await import('firebase/auth');
       
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
       // Optional: Save tokens if needed later
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('hw_admin_token', token);

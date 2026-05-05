@@ -1,5 +1,5 @@
-import { storage } from './firebase'; // Assuming firebase is exported from ./firebase
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getFirebaseStorage } from './firebase';
 
 export async function convertAndUploadImage(file: File, productId: string) {
   // Read the file as an Image
@@ -61,7 +61,7 @@ export async function convertAndUploadImage(file: File, productId: string) {
     if (!blob) throw new Error('Failed to create WebP blob');
 
     // Upload to Firebase Storage
-    const storageRef = ref(storage, `products/${productId}/${name}.webp`);
+    const storageRef = ref(getFirebaseStorage(), `products/${productId}/${name}.webp`);
     
     // Set metadata to cache the image
     const metadata = {
