@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth';
-import cloudinary from '@/lib/cloudinary';
+import { storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,26 +17,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Convert File to buffer then to base64 data URI
+    // Convert File to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const base64 = buffer.toString('base64');
-    const dataUri = `data:${file.type};base64,${base64}`;
 
-    const result = await cloudinary.uploader.upload(dataUri, {
-      folder: 'hotwheels',
-      resource_type: 'image',
-    });
+    // Create a unique filename
+    const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+    const storageRef = ref(storage, `uploads/${filename}`);
+    
+    // Upload to Firebase Storage
+    // Note: In a server environment, we can use uploadBytes if the storage is initialized correctly
+    const metadata = {
+      contentType: file.type,
+    };
+
+    const snapshot = await uploadBytes(storageRef, buffer, metadata);
+    const downloadUrl = await getDownloadURL(snapshot.ref);
 
     return NextResponse.json({
       success: true,
-      url: result.secure_url,
-      public_id: result.public_id,
+      url: downloadUrl,
+      public_id: filename,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload error:', error);
     return NextResponse.json(
-      { error: 'Failed to upload image' },
+      { error: 'Failed to upload image: ' + error.message },
       { status: 500 }
     );
   }

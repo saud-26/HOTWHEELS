@@ -13,7 +13,7 @@ export interface JWTPayload {
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    // Temporary fallback: decode the Firebase ID token without signature verification to keep Cloudinary upload working.
+    // Temporary fallback: decode the Firebase ID token without signature verification.
     // NOTE: This assumes the token structure matches a Firebase JWT token.
     const base64Url = token.split('.')[1];
     if (!base64Url) return null;

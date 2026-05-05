@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
       const { signInWithEmailAndPassword } = await import('firebase/auth');
       
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // Optional: Save tokens if needed for Cloudinary auth later
+      // Optional: Save tokens if needed later
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('hw_admin_token', token);
       
